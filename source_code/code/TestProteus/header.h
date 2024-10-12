@@ -9,9 +9,21 @@ struct KeyValue {
     uint16_t value; // Nilai yang dipetakan
 };
 
-// Deklarasi array mappings dengan extern
-extern const KeyValue binarySegmentMap[];
-extern const KeyValue hexSegmentMap36[];
-extern const KeyValue hexSegmentMap26[];
+// Struktur SegmentMap yang berisi dua array
+struct SegmentMap {
+    const KeyValue* binary; // Pointer ke array binarySegmentMap
+    const KeyValue* hex36;    // Pointer ke array hexSegmentMap 36
+    const KeyValue* hex26;    // Pointer ke array hexSegmentMap 26
+};
+
+// Deklarasi SegmentMap dengan extern
+extern const SegmentMap segmentMaps;
+
+// Ukuran array
+extern const int binarySegmentMapSize;
+extern const int hexSegmentMap36Size;
+extern const int hexSegmentMap26Size;
+
+
 
 #endif // HEADER_H

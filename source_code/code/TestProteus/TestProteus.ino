@@ -1,4 +1,4 @@
-// #include "header.h"
+#include "header.h"
 
 // Pin untuk koneksi shift register
 const int dataPin = 2;   // Pin untuk Data Serial Input (DS)
@@ -11,12 +11,10 @@ const int speedPin = A6;
 
 
 char nama[4] = { 'I', 'B', 'N', 'U' };                                    // Nama yang ditampilkan
-int key[4] = {};                                                          // Kunci untuk menyimpan indeks karakter
 int counter = 0;                                                          // Variabel untuk menyimpan nilai counter
 int displayCounter = 0;                                                   // Variabel untuk menyimpan nilai display
 unsigned long lastUpdateTime = 0;                                         // Waktu update counter
 const int updateInterval = 100;                                           // Interval update dalam ms
-const int segmentMapLength = sizeof(characters) / sizeof(characters[0]);  // mengambil panjang arr
 bool displayStatus[4] = { false, false, false, false };                   // Status display
 
 void setup() {
@@ -29,25 +27,21 @@ void setup() {
   // Set semua pin display sebagai output dan dapatkan kunci dari nama
   for (int i = 0; i < 4; i++) {
     pinMode(displayPins[i], OUTPUT);
-    key[i] = getKey(nama[i]);
   }
 }
 
 
 
 void loop() {
-
   // Multiplexing display
   for (int display = 0; display < displayCounter + 1; display++) {
     for (int i = 0; i < displayCounter + 1; i++) {
       digitalWrite(displayPins[i], LOW);  // Matikan display setelah update
     }
 
-    // operator ternary untuk menentukan nilai dari indexCharacter
-    int indexCharacter = displayStatus[display] ? key[display] : counter;
-
+    // operator ternary untuk menentukan kerakter apa yg akan di tampilkan
+    uint16_t segmentData = displayStatus[display] ? find(nama[display]) : segmentMaps.hex36[counter].value;
     // Ambil data segment
-    uint16_t segmentData = segmentMap[indexCharacter];
     shiftOutData(segmentData);  // Kirimkan data ke shift register
 
     // Tampilkan karakter saat ini
@@ -61,7 +55,7 @@ void loop() {
     counter++;                  // Increment counter untuk langkah berikutnya
 
     // Periksa apakah counter telah mencapai karakter yang ditentukan
-    if (counter < segmentMapLength && segmentMap[counter] == segmentMap[key[displayCounter]]) {
+    if (counter < hexSegmentMap36Size && segmentMaps.hex36[counter].key == nama[displayCounter]) {
       displayStatus[displayCounter] = true;  // Tandai display saat ini
       counter = 0;                           /// Reset counter ke nol
 
@@ -80,16 +74,6 @@ void TurnOnDigitPin(int digitPin) {
   }
 }
 
-// Dapatkan kunci karakter
-int getKey(char character) {
-  for (int i = 0; i < sizeof(characters) / sizeof(characters[0]); i++) {
-    if (characters[i] == character) {
-      return i;  // Kembalikan kunci yang cocok
-    }
-  }
-  return 0;  // Kembalikan default jika tidak ditemukan
-}
-
 // Kirim data ke shift register
 void shiftOutData(uint16_t segmentData) {
   uint8_t firstByte = (segmentData >> 8) & 0xFF;  // Ambil 8 bit pertama
@@ -101,10 +85,12 @@ void shiftOutData(uint16_t segmentData) {
   digitalWrite(latchPin, HIGH);                       // Mengunci output
 }
 
-
-void printCurrentCharacter(int display, char character) {
-  Serial.print("Display ");
-  Serial.print(display);
-  Serial.print(": ");
-  Serial.println(character);
+uint16_t find(const char* key) {
+  for (int i = 0; i < hexSegmentMap36Size; i++) {
+    if (segmentMaps.hex36[i].key == key ) {
+      return segmentMaps.hex36[i].value;
+    }
+  }
+  return 0;  // Nilai default jika tidak ditemukan
 }
+
