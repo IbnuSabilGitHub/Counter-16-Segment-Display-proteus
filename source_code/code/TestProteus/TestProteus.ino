@@ -8,51 +8,6 @@ const int clockPin = 4;  // Pin untuk Shift Clock (SH_CP)
 const int displayPins[] = { 5, 6, 7, 8 };
 const int speedPin = A6;
 
-// Mapping segmen 16-bit untuk karakter 1-9 dan A-Z
-const uint16_t segmentMap[] = {
-  0x44FF, // 0
-  0x000C, // 1
-  0x8877, // 2
-  0x883F, // 3
-  0x888C, // 4
-  0x90B3, // 5
-  0x88FB, // 6
-  0x000F, // 7
-  0x88FF, // 8
-  0x88BF, // 9
-  0x88CF, // A
-  0x2A3F, // B
-  0x00F3, // C
-  0x223F, // D
-  0x88F3, // E
-  0x88F3, // F
-  0x08FB, // G
-  0x88CC, // H
-  0x2233, // I
-  0x007C, // J
-  0x94C0, // K
-  0x00F0, // L
-  0x05CC, // M
-  0x11CC, // N
-  0x00FF, // O
-  0x88C7, // P
-  0x10FF, // Q
-  0x98C7, // R
-  0x88BB, // S
-  0x2203, // T
-  0x00FC, // U
-  0x44C0, // V
-  0x50CC, // W
-  0x5500, // X
-  0x2500, // Y
-  0x4433  // Z
-};
-
-const char characters[] = {
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-  'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-  'V', 'W', 'X', 'Y', 'Z'
-};
 
 
 char nama[4] = { 'I', 'B', 'N', 'U' };                                    // Nama yang ditampilkan
